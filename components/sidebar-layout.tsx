@@ -20,7 +20,7 @@ import { Route } from '../infra/route'
 
 const { Header, Content, Footer, Sider } = Layout
 
-export const SidebarLayout = (props:any) => {
+export const SidebarLayout = (props: any) => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider
@@ -45,9 +45,8 @@ export const SidebarLayout = (props:any) => {
       </Sider>
       <Layout style={{ backgroundColor: '#fff' }}>
         <Header style={{ backgroundColor: '#fff' }}>
-          <Row justify='end' align='middle'>
-            <Col><Typography.Title>동근 하이</Typography.Title></Col>
-            <Col>hi</Col>
+          <Row justify='center' align='middle'>
+            <Col><Typography.Title>LUNA</Typography.Title></Col>
           </Row>
         </Header>
         <Content>
