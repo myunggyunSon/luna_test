@@ -1,4 +1,4 @@
-import { NetworkMessage } from 'api/base-api'
+import { NetworkMessage } from './base-api'
 
 export class ApiError extends Error {
   status: number
