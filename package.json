@@ -13,7 +13,7 @@
     "react": "17.0.2",
     "react-daum-postcode": "3.0.1",
     "react-dom": "17.0.2",
-    "react-naver-map": "https://github.com/deer-develop/react-naver-map"
+    "react-naver-map": "https://github.com/nanangqq/react-naver-map"
   },
   "devDependencies": {
     "@types/node": "17.0.14",
