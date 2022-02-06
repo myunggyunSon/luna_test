@@ -3,7 +3,7 @@ import 'antd/dist/antd.css'
 import NaverMap, { Marker } from 'react-naver-map'
 
 import {
-  Layout, Typography, Input, Space, Card, Modal, Checkbox,
+  Layout, Typography, Input, Space, Card, Modal, Checkbox, List,
 
 } from 'antd'
 import { useEffect, useState } from 'react'
@@ -85,6 +85,8 @@ const AssignOrder: NextPage = () => {
   const [freights, setFreights] = useState<Freight[]>([])
 
   const [truckerSelected, setTruckerSelected] = useState<Trucker>({})
+  const [freightSelected, setFreightSelected] = useState<Freight>({})
+
   const [isTruckerModalVisible, setIsTruckerModalVisible] = useState<boolean>(false)
 
   useEffect(() => {
@@ -94,9 +96,9 @@ const AssignOrder: NextPage = () => {
       })
 
     freightApi.getFreight()
-      .then((res)=>{
+      .then((res) => {
         setFreights(res)
-        console.log(res.filter(a=>a.shipperLat))
+        console.log(res.filter(a => a.shipperLat))
       })
   }, [])
 
@@ -107,15 +109,48 @@ const AssignOrder: NextPage = () => {
         <Layout style={{ flex: 2 }}>
 
           <Modal
-            visible={isTruckerModalVisible}>
-              <Space>
-                {freights.map(freight => (
-                  <Card title={freight.shipperName}>
+            visible={isTruckerModalVisible}
+            onOk={() => {
+              setIsTruckerModalVisible(false)
+            }}
+            onCancel={() => {
+              setIsTruckerModalVisible(false)
+            }}
+          >
+            <List
+              header={<Typography.Title level={3}>선택가능한 화물</Typography.Title>}
+              dataSource={freights}
+              renderItem={freight => (
+                <List.Item
+                  key={freight.freightName}
+                >
+                  <List.Item.Meta
+                    title={`${freight.freightName} / ${freight.weight}톤 / ${freight.price / 10000}만원`}
+                    description={''}
+                  />
+                  {`${freight.shipperAddress} => ${freight.receiverAddress}`}
+                </List.Item>
+              )}
+            >
+
+              {/*{freights.map(freight => (
+                <List.Item title={freight.shipperName}>
+                  <div style={{ display: 'flex', flexDirection:'column'}}>
+                    <p>{freight.shipperName}</p>
+                    <p>{freight.shipperAddress}</p>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection:'column'}}>
+                    <p>{freight.receiverName}</p>
+                    <p>{freight.receiverAddress}</p>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection:'column'}}>
                     <p>{freight.price}원</p>
                     <p>{freight.weight}톤</p>
-                  </Card>
-                ))}
-              </Space>
+                  </div>
+                </List.Item>*/
+              }
+
+            </List>
           </Modal>
 
           <NaverMap
@@ -134,13 +169,10 @@ const AssignOrder: NextPage = () => {
                 key={id}
                 lat={trucker.currentLat}
                 lng={trucker.currentLng}
-                onclick={(event) => {
-                  console.log('d')
-                  alert('c')
+                onClick={(event) => {
                   setTruckerSelected(trucker)
                   setIsTruckerModalVisible(true)
                 }}
-                shape={{coords: [0,12, 12,0, 24,12, 12,32, 0,12], type: 'poly'}}
                 icon={{
                   content: `
                             <div style="position: absolute; width:100px; height:40px; display: flex;
@@ -166,13 +198,11 @@ const AssignOrder: NextPage = () => {
             ))}
             {freights.filter(freight => freight.shipperLat).map((freight, id) => (
               <Marker
-                key={id*100}
+                key={id * 100}
                 lat={freight.shipperLat}
                 lng={freight.shipperLng}
-                onclick={(event) => {
-                  console.log('d')
-                  alert('c')
-                  setTruckerSelected(trucker)
+                onClick={(event) => {
+                  setFreightSelected(freight)
                   setIsTruckerModalVisible(true)
                 }}
                 icon={{
@@ -182,7 +212,7 @@ const AssignOrder: NextPage = () => {
                             opacity:0.8">
                               <div style="width:90px; height:30px; background-color: #fff; border-radius: 30px;
                               display: flex; justify-content: center; align-items:center">
-                                  <span style="color:#2ca577; font-size: 18px">${freight.freightName}(${freight.price/10000})</span>
+                                  <span style="color:#2ca577; font-size: 18px">${freight.freightName}(${freight.price / 10000})</span>
                               </div>
                             </div>`,
                 }}
@@ -202,7 +232,6 @@ const AssignOrder: NextPage = () => {
           </NaverMap>
         </Layout>
       </Layout>
-
     </SidebarLayout>
   )
 }

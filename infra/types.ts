@@ -17,6 +17,9 @@ export interface Freight {
   name: string;
   price: number;
   shipperName: string;
+  shipperAddress:string;
+  receiverName: string;
+  receiverAddress:string;
   freightName: string;
   weight: number;
   shipperLat: number;
