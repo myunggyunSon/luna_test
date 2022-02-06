@@ -1,10 +1,4 @@
-interface Trucker {
-  name: string;
-  age: number;
-  workyears: number;
-  rate: number;
-  carNumber: string;
-}
+import { Trucker } from './types'
 
 export const Truckers: Trucker[] = [
   {

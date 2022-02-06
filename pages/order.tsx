@@ -7,13 +7,15 @@ import DaumPostcode from 'react-daum-postcode'
 
 import {
   Layout, Row, Typography, Input, Space, Card, Modal, Checkbox,
-  DatePicker, TimePicker, Radio, AutoComplete, Transfer,
+  DatePicker, TimePicker, Radio, AutoComplete, Transfer, Button,
 } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SidebarLayout } from '../components/sidebar-layout'
 import { HomeOutlined, UserOutlined, PhoneOutlined, FormOutlined } from '@ant-design/icons'
-import { Truckers } from '../infra/mockedData'
+import { Trucker } from '../infra/types'
+//import { Truckers } from '../infra/mockedData'
 import { getAddressByKakao, getAddressByNaver } from './api/naver-api'
+import { truckerApi } from './api/trucker-api'
 
 interface OrderCardProps {
   visible: boolean;
@@ -47,6 +49,16 @@ const Order: NextPage = () => {
 
   // 차주 선택
   const [targetKeys, setTargetKeys] = useState([''])
+
+  const [truckers, setTruckers] = useState<Trucker[]>([])
+
+  useEffect(() => {
+    truckerApi.getTruckers()
+      .then((res) => {
+        setTruckers(res)
+        console.log(res)
+      })
+  })
 
   return (
     <SidebarLayout>
@@ -163,8 +175,7 @@ const Order: NextPage = () => {
           <Typography.Title level={4}>
             배차 요청
           </Typography.Title>
-          <Space direction='vertical'>
-            <div>
+          <Space direction='vertical' >
               <Card onClick={() => {
                 setisShipperModalVisible(true)
               }}
@@ -172,22 +183,28 @@ const Order: NextPage = () => {
                 {shipperAddress}
                 {shipperName || '상차지 정보를 입력하세요'}
               </Card>
-              <Card title={'하차지정보'} extra={<a href="#">입력하기</a>}>
-                하차지 정보를 입력하세요
-              </Card>
               <Card title={'물품정보'} extra={<a href="#">입력하기</a>}
                     onClick={() => {
                       setisCargoModalVisible(true)
                     }}>
                 물품 정보를 입력하세요
               </Card>
-
-
-            </div>
             <Typography.Title level={4}>차량 선택하기</Typography.Title>
+            <Button type={'primary'} onClick={() => {
+              truckerApi.addTrucker({
+                name: '안녕',
+                carNumber: '3982',
+                phone: '01024106118',
+                carType: 'cargo',
+                workYears: 5,
+
+              })
+            }}>차량 추가하기</Button>
+
+
             <AutoComplete
               style={{ width: '100%' }}
-              options={Truckers.map(trucker => ({ value: `${trucker.carNumber} / ${trucker.name} / ${trucker.age}세` }))}
+              options={truckers.map(trucker => ({ value: `${trucker.carNumber} / ${trucker.name} / ${trucker.workYears}년` }))}
               placeholder="차량숫자를 입력해 검색하세요 (예: 2)"
               filterOption={(inputValue, option) =>
                 option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
@@ -195,32 +212,36 @@ const Order: NextPage = () => {
             />
 
             <Transfer
-              dataSource={Truckers.map((trucker, idx) => ({
+              dataSource={truckers.map((trucker, idx) => ({
                 key: `${idx}`,
-                title: `${trucker.name} / ${trucker.carNumber}`}))}
-                showSearch
-                targetKeys={targetKeys}
-                onChange={(targetKeys) => {setTargetKeys(targetKeys)}}
-                render={item => item.title}
-                />
-                </Space>
-                </Layout>
+                title: `${trucker.name} / ${trucker.carNumber}`,
+              }))}
+              showSearch
+              targetKeys={targetKeys}
+              onChange={(targetKeys) => {
+                setTargetKeys(targetKeys)
+              }}
+              render={item => item.title}
+            />
+          </Space>
+        </Layout>
 
-                <Layout style={{ flex: 2 }}>
-                <NaverMap
-                style={{
-                width: '100%',
-                height: '100%',
-                }}
-                //220202: 여기에서 ncp를 빼면 동작 안한다.. 신기하네 뭐지
-                ncp
-                clientId={'905azfqrx7'}
-                ></NaverMap>
-                </Layout>
-                </Layout>
+        <Layout style={{ flex: 2 }}>
+          <NaverMap
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+            //220202: 여기에서 ncp를 빼면 동작 안한다.. 신기하네 뭐지
+            ncp
+            clientId={'905azfqrx7'}
+            cent
+          ></NaverMap>
+        </Layout>
+      </Layout>
 
-                </SidebarLayout>
-                )
-                }
+    </SidebarLayout>
+  )
+}
 
-                export default Order
+export default Order

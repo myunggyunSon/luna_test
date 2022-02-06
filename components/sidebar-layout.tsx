@@ -14,7 +14,7 @@ import Link from 'next/link'
 
 import {
   BulbOutlined,
-
+  CarOutlined,
 } from '@ant-design/icons'
 import { Route } from '../infra/route'
 
@@ -40,6 +40,13 @@ export const SidebarLayout = (props: any) => {
             key={'1'}
             icon={<BulbOutlined/>}>
             <Link href={Route.ORDER}>{'배차 요청'}</Link>
+          </Menu.Item>
+        </Menu>
+        <Menu theme={'dark'}>
+          <Menu.Item
+            key={'2'}
+            icon={<CarOutlined/>}>
+            <Link href={Route.ASSIGN}>{'차량 배차'}</Link>
           </Menu.Item>
         </Menu>
       </Sider>
