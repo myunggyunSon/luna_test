@@ -1,7 +1,8 @@
 import { AuthError, NetworkError, ServiceError } from './api-error'
-import { NetworkMessage } from './base-api'
 
-export const getAddressByNaver = async (address: string): Promise<NetworkMessage> => {
+
+// 22.02.02 api CORS 문제로 동작 확인 못함
+export const getAddressByNaver = async (address: string): Promise<any> => {
   let res
   try {
     res = await fetch(`https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${address}`, {
@@ -26,8 +27,8 @@ export const getAddressByNaver = async (address: string): Promise<NetworkMessage
 }
 
 
-// 22.02.02 api call 동작 확인 (https://developers.kakao.com/docs/latest/ko/local/dev-guide)
-export const getAddressByKakao = async (address: string): Promise<NetworkMessage> => {
+// 22.02.02 api 동작 확인 (https://developers.kakao.com/docs/latest/ko/local/dev-guide)
+export const getAddressByKakao = async (address: string): Promise<any> => {
   let res
   try {
     res = await fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${address}`, {

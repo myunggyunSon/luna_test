@@ -17,9 +17,9 @@ export interface Freight {
   name: string;
   price: number;
   shipperName: string;
-  shipperAddress:string;
+  shipperAddress: string;
   receiverName: string;
-  receiverAddress:string;
+  receiverAddress: string;
   freightName: string;
   weight: number;
   shipperLat: number;
@@ -27,3 +27,21 @@ export interface Freight {
 
 }
 
+// https://navermaps.github.io/maps.js/docs/global.html#PointerEvent
+export interface NaverMapPointEvent {
+  coord: {
+    lat: number;
+    lng: number;
+  }
+  point: {
+    //
+    x: number;
+    y: number;
+  }
+  offset: {
+    x: number;
+    y: number;
+  }
+  pointerEvent: any
+  overlay: any
+}

@@ -1,3 +1,4 @@
 export const CONTENT_PADDING = 36
 export const TRUCKER_MARKER_WIDTH = 40
 export const TRUCKER_MARKER_HEIGHT = TRUCKER_MARKER_WIDTH * 1.125
+export const NAVER_MAP_CLIENT_ID = '905azfqrx7'

@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
 import 'antd/dist/antd.css'
 import NaverMap from 'react-naver-map'
 
@@ -12,6 +11,7 @@ import {
 import { useEffect, useState } from 'react'
 import { SidebarLayout } from '../components/sidebar-layout'
 import { HomeOutlined, UserOutlined, PhoneOutlined, FormOutlined } from '@ant-design/icons'
+import { NAVER_MAP_CLIENT_ID } from '../infra/constants'
 import { Trucker } from '../infra/types'
 //import { Truckers } from '../infra/mockedData'
 import { getAddressByKakao, getAddressByNaver } from './api/naver-api'
@@ -30,6 +30,7 @@ const ShippmentOrderCard = (props: OrderCardProps) => {
 }
 
 const getCoordsByAddress = async (address: string) => {
+  // TODO 사용하게 될 경우 type 선언 필요
   const response = await getAddressByKakao(address)
   console.log(response)
   console.log(response.documents[0].address.x) // 위도
@@ -234,7 +235,7 @@ const Order: NextPage = () => {
             }}
             //220202: 여기에서 ncp를 빼면 동작 안한다.. 신기하네 뭐지
             ncp
-            clientId={'905azfqrx7'}
+            clientId={NAVER_MAP_CLIENT_ID}
             cent
           ></NaverMap>
         </Layout>
