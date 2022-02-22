@@ -27,6 +27,11 @@ export interface Freight {
 
 }
 
+export interface TruckOption {
+  name: string;
+  displayName: string;
+}
+
 // https://navermaps.github.io/maps.js/docs/global.html#PointerEvent
 export interface NaverMapPointEvent {
   coord: {

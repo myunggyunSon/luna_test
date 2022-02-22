@@ -1,32 +1,29 @@
+import moment from 'moment'
 import type { NextPage } from 'next'
 import 'antd/dist/antd.css'
-import NaverMap from 'react-naver-map'
 
 import DaumPostcode from 'react-daum-postcode'
 
 import {
   Layout, Row, Typography, Input, Space, Card, Modal, Checkbox,
-  DatePicker, TimePicker, Radio, AutoComplete, Transfer, Button,
+  DatePicker, TimePicker, Radio, AutoComplete, Transfer, Button, Form, Select, Col, Divider, Tooltip,
 } from 'antd'
 import { useEffect, useState } from 'react'
+import LoaderForm from '../components/loaderForm'
 import { SidebarLayout } from '../components/sidebar-layout'
 import { HomeOutlined, UserOutlined, PhoneOutlined, FormOutlined } from '@ant-design/icons'
-import { NAVER_MAP_CLIENT_ID } from '../infra/constants'
+import { NAVER_MAP_CLIENT_ID, TRUCK_OPTIONS, WEIGHT_OPTIONS, INPUT_MID_WIDTH } from '../infra/constants'
 import { Trucker } from '../infra/types'
 //import { Truckers } from '../infra/mockedData'
 import { getAddressByKakao, getAddressByNaver } from './api/naver-api'
 import { truckerApi } from './api/trucker-api'
+import Home from './index'
+
+const { Option } = Select
+const { Text } = Typography
 
 interface OrderCardProps {
   visible: boolean;
-}
-
-const ShippmentOrderCard = (props: OrderCardProps) => {
-  return (
-    <Modal visible={props.visible}>
-      <Typography.Title level={5}>상차지 정보</Typography.Title>
-    </Modal>
-  )
 }
 
 const getCoordsByAddress = async (address: string) => {
@@ -35,6 +32,12 @@ const getCoordsByAddress = async (address: string) => {
   console.log(response)
   console.log(response.documents[0].address.x) // 위도
   console.log(response.documents[0].address.y) // 경도
+}
+
+const layout = {
+  layout: 'vertical',
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 }
 
 const Order: NextPage = () => {
@@ -53,6 +56,11 @@ const Order: NextPage = () => {
 
   const [truckers, setTruckers] = useState<Trucker[]>([])
 
+  //
+  const [freightForm] = Form.useForm()
+  const [loaderForm] = Form.useForm()
+  const [unLoaderForm] = Form.useForm()
+
   useEffect(() => {
     truckerApi.getTruckers()
       .then((res) => {
@@ -61,9 +69,12 @@ const Order: NextPage = () => {
       })
   })
 
+  const onFinish = (values: any) => {
+    console.log('Success:', values)
+  }
+
   return (
     <SidebarLayout>
-      <Layout style={{ height: '100%', display: 'flex', flexDirection: 'row', borderTop: '' }}>
 
         {/* 상차지 정보 모달 */}
         <Modal visible={isShipperModalVisible}
@@ -76,23 +87,24 @@ const Order: NextPage = () => {
                }}>
           <Typography.Title level={4}>상차지 정보 입력하기</Typography.Title>
 
-          <Typography.Title level={5}>상차지 주소</Typography.Title>
+          <Typography.Title level={5}>상차지 주소</Typography.Title>러
+
           <div style={{ width: '100%', marginBottom: '10px' }}>
             <Space direction={'vertical'} style={{ width: '100%' }}>
               <Input.Search size={'large'} value={shipperAddress} onClick={() => {
                 setIsOpenPost(true)
               }} placeholder={'이곳을 눌러 주소를 찾으세요'}/>
               {isOpenPost &&
-              <Modal visible={true}
-                     cancelText={''}
-                     onOk={() => {
-                       setIsOpenPost(false)
-                     }}>
-                <DaumPostcode onComplete={(data) => {
-                  setShipperAddress(data.address)
-                  setIsOpenPost(false)
-                }}/>
-              </Modal>
+                <Modal visible={true}
+                       cancelText={''}
+                       onOk={() => {
+                         setIsOpenPost(false)
+                       }}>
+                  <DaumPostcode onComplete={(data) => {
+                    setShipperAddress(data.address)
+                    setIsOpenPost(false)
+                  }}/>
+                </Modal>
               }
 
               <div/>
@@ -122,7 +134,6 @@ const Order: NextPage = () => {
             alert('C')
           }}>이 주소를 기본 주소지로 설정</Checkbox>
         </Modal>
-
 
         {/* 물품 정보 모달 */}
         <Modal visible={isCargoModalVisible}
@@ -172,24 +183,132 @@ const Order: NextPage = () => {
           </div>
         </Modal>
 
-        <Layout style={{ flex: 1, padding: '10px 40px', backgroundColor: '#fff' }}>
-          <Typography.Title level={4}>
-            배차 요청
-          </Typography.Title>
-          <Space direction='vertical' >
-              <Card onClick={() => {
-                setisShipperModalVisible(true)
-              }}
-                    title={'상차지정보'} extra={<a href="#">입력하기</a>}>
-                {shipperAddress}
-                {shipperName || '상차지 정보를 입력하세요'}
+        <Row gutter={[24, 24]}>
+          <Col span={24}>
+            {/* 화물 카드 */}
+            <Card bodyStyle={{ padding: 12 }} title={'화물 정보'}>
+              <Form {...layout} form={freightForm} name="control-ref" onFinish={onFinish}>
+                <Row>
+                  <Col flex={'1 1 400px'}>
+                    <Space style={{ width: '100%' }}>
+                      <Form.Item style={{ width: '100%' }} name="truckOption" label="종류" rules={[{ required: true }]}>
+                        <Select
+                          // TODO flexbox 찾기
+                          style={{ width: INPUT_MID_WIDTH }}
+                          defaultValue={'cargo'}
+                          onChange={() => {
+                          }}
+                        >
+                          {TRUCK_OPTIONS.map((truckOption) => (<Option
+                              value={truckOption.name}>{truckOption.displayName}
+                            </Option>),
+                          )}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item style={{ display: 'flex', flex: 1 }} name="weight" label="중량"
+                                 rules={[{ required: true }]}>
+                        <Select
+                          style={{ width: INPUT_MID_WIDTH }}
+
+                          defaultValue={'cargo'}
+                          onChange={() => {
+                          }}
+                          allowClear
+                        >
+                          {WEIGHT_OPTIONS.map((weight) => <Option
+                            value={weight}>{weight}</Option>)}
+                        </Select>
+                      </Form.Item>
+                    </Space>
+                  </Col>
+                  <Col flex={'1 1 400px'}>
+                    <Form.Item style={{ width: '100%' }} name="품목" label="품목" rules={[{ required: true }]}>
+                      <Input
+                        style={{ width: '400px' }}
+                        placeholder="의류 및 신발박스 / 직원수작업 / 윙가능"
+                        onChange={() => {
+                        }}
+                      >
+                      </Input>
+                    </Form.Item>
+                    <Form.Item
+                      style={{ width: '100%' }}
+                      name="비고"
+                      label="비고">
+                      <Input
+                        style={{ width: '400px' }}
+                        placeholder="특이사항이나 기타 사항을 적어주세요. 정산액셀에 표시됩니다"
+                        onChange={() => {
+                        }}
+                      >
+                      </Input>
+                    </Form.Item>
+                  </Col>
+                  <Col flex={'1 1 400px'}>
+                    <Form.Item style={{ flex: 1, justifyContent: 'flex-start' }} name="additionalInfo" label="추가요청사항"
+                               rules={[{ required: true }]}>
+                      <Input.TextArea style={{ width: '400px' }} rows={3}/>
+                    </Form.Item>
+                  </Col>
+
+                </Row>
+              </Form>
+            </Card>
+          </Col>
+          {/* 출발지 주소 카드 */}
+          <Col span={8}>
+            <LoaderForm
+              isLoad={true}
+              form={loaderForm}
+            />
+          </Col>
+          <Col span={8}>
+            <LoaderForm
+              isLoad={false}
+              form={unLoaderForm}
+            />
+          </Col>
+          <Col span={4}>
+            <Row style={{ marginBottom: 24 }}>
+              <Card size={'small'} style={{ width: '100%' }} title={'옵션'}>
+                <Radio style={{ width: '100px' }} value={1}>이착</Radio>
+                <Radio style={{ width: '100px' }} value={1}>빠른배차</Radio>
+                <Radio style={{ width: '100px' }} value={1}>왕복</Radio>
+                <Radio style={{ width: '100px' }} value={1}>혼적</Radio>
+                <Radio style={{ width: '100px' }} value={1}>착불</Radio>
               </Card>
-              <Card title={'물품정보'} extra={<a href="#">입력하기</a>}
-                    onClick={() => {
-                      setisCargoModalVisible(true)
-                    }}>
-                물품 정보를 입력하세요
+            </Row>
+            <Row>
+              <Card size={'small'} style={{ width: '100%' }} title={'신청자 정보'}>
+                <Form layout={'vertical'}>
+                  <Form.Item label={'이름'} name={'applierName'}>
+                    <Input></Input>
+                  </Form.Item>
+                  <Form.Item label={'연락처'} name={'applierPhone'}>
+                    <Input></Input>
+                  </Form.Item>
+                </Form>
               </Card>
+            </Row>
+          </Col>
+          <Col span={4}>
+            <Row gutter={[0, 12]}>
+              <Button type="danger" icon={<HomeOutlined/>} style={{ width: '100%', height: 50 }}>견적요청</Button>
+              <Card style={{ width: '100%' }} title={'견적정보'}>
+                <p>예상거리: <Text mark>298</Text>km</p>
+                <p>예상금액: <Text mark>179,000</Text>원</p>
+              </Card>
+              <Button type="primary" icon={<HomeOutlined/>} style={{ width: '100%', height: 50 }}>화물 등록</Button>
+              <Button icon={<HomeOutlined/>} style={{ width: '100%', height: 50 }}>목록으로</Button>
+            </Row>
+          </Col>
+        </Row>
+
+
+        {/*
+            <Button onClick={() => {
+              setisCargoModalVisible(!isCargoModalVisible)
+            }}/>
             <Typography.Title level={4}>차량 선택하기</Typography.Title>
             <Button type={'primary'} onClick={() => {
               truckerApi.addTrucker({
@@ -224,10 +343,9 @@ const Order: NextPage = () => {
               }}
               render={item => item.title}
             />
-          </Space>
-        </Layout>
+            */}
 
-        <Layout style={{ flex: 2 }}>
+        {/*<Layout style={{ flex: 2 }}>
           <NaverMap
             style={{
               width: '100%',
@@ -238,8 +356,8 @@ const Order: NextPage = () => {
             clientId={NAVER_MAP_CLIENT_ID}
             cent
           ></NaverMap>
-        </Layout>
-      </Layout>
+        </Layout>*/
+        }
 
     </SidebarLayout>
   )
