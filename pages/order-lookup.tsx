@@ -102,44 +102,44 @@ const OrderLookup: NextPage = () => {
     <SidebarLayout>
       <Row gutter={[24, 24]}>
         <Col span={24}>
-          <Card style={{ width: '100%' }}>
-            <Row>
-              <Form form={filterForm}>
-                <Space>
-                  <Form.Item name={'filterByDateOf'}>
-                    <Select defaultValue={'createdAt'} style={{ width: '100px' }}>
-                      <Option value={'createdAt'}>등록일시</Option>
-                      <Option value={'departedAt'}>출발일시</Option>
-                      <Option value={'arrivedAt'}>도착일시</Option>
-                    </Select>
-                  </Form.Item>
-                  <Form.Item>
-                    <RangePicker defaultValue={[moment().subtract(1, 'month'), moment()]} placeholder={['시작일', '종료일']}/>
-                  </Form.Item>
-                  <Form.Item name={'truckSelect'}>
-                    <TruckSelect/>
-                  </Form.Item>
-                  <Form.Item>
-                    <WeightSelect/>
-                  </Form.Item>
-                  <Form.Item>
-                    <Input style={{ width: INPUT_MID_WIDTH }} placeholder={'검색어'}/>
-                  </Form.Item>
-                </Space>
-              </Form>
-            </Row>
-            <Row justify={'end'}>
-              <Button onClick={() => {
-              }}>검색
-              </Button>
-              <Button icon={<FileAddOutlined/>} type={'primary'} onClick={() => {
-  console.log(dataSource.filter((row) => (row.key in selectedRowKeys)))
-              }}>              <CSVLink style={{color:'#fff'}} data={ dataSource.filter((row) => (row.key in selectedRowKeys))}>엑셀 다운로드</CSVLink>
+        <Card style={{ width: '100%' }}>
+          <Row>
+            <Form form={filterForm}>
+              <Space>
+                <Form.Item name={'filterByDateOf'}>
+                  <Select defaultValue={'createdAt'} style={{ width: '100px' }}>
+                    <Option value={'createdAt'}>등록일시</Option>
+                    <Option value={'departedAt'}>출발일시</Option>
+                    <Option value={'arrivedAt'}>도착일시</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item>
+                  <RangePicker defaultValue={[moment().subtract(1, 'month'), moment()]} placeholder={['시작일', '종료일']}/>
+                </Form.Item>
+                <Form.Item name={'truckSelect'}>
+                  <TruckSelect/>
+                </Form.Item>
+                <Form.Item>
+                  <WeightSelect/>
+                </Form.Item>
+                <Form.Item>
+                  <Input style={{ width: INPUT_MID_WIDTH }} placeholder={'검색어'}/>
+                </Form.Item>
+              </Space>
+            </Form>
+          </Row>
+          <Row justify={'end'}>
+            <Button onClick={() => {
+            }}>검색
+            </Button>
+            <Button icon={<FileAddOutlined/>} type={'primary'} onClick={() => {
+              console.log(dataSource.filter((row) => (row.key in selectedRowKeys)))
+            }}>              <CSVLink style={{color:'#fff'}} data={ dataSource.filter((row) => (row.key in selectedRowKeys))}>엑셀 다운로드</CSVLink>
 
-              </Button>
-            </Row>
-          </Card>
-        </Col>
+            </Button>
+          </Row>
+        </Card>
+      </Col>
         <Col span={24}>
           <Table
             rowSelection={{

@@ -43,17 +43,17 @@ export const SidebarLayout = (props: any) => {
           <Menu.Item
             key={'0'}
             icon={<SearchOutlined/>}>
-            <Link href={Route.ORDER_LOOKUP}>{'화물 조회'}</Link>
+            <Link href={Route.ORDER_LOOKUP}>{'배차 및 차량 관리'}</Link>
           </Menu.Item>
 
         </Menu>
-        <Menu theme={'dark'}>
+        {/*<Menu theme={'dark'}>
           <Menu.Item
             key={'1'}
             icon={<CarOutlined/>}>
             <Link href={Route.ORDER}>{'화물 등록'}</Link>
           </Menu.Item>
-        </Menu>
+        </Menu>*/}
         <Menu theme={'dark'}>
           <Menu.Item
             key={'2'}
