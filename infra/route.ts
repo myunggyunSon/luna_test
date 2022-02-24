@@ -3,7 +3,8 @@ export enum Route {
   ORDER = '/order',
   ASSIGN = './assign-order',
   SETTLEMENT = './settlement',
-  ORDER_LOOKUP = '/order-lookup'
+  ORDER_LOOKUP = '/order-lookup',
+  PAYMENT = './payment'
 }
 
 export const INITIAL_ROUTE = Route.INDEX

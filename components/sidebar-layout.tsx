@@ -61,6 +61,13 @@ export const SidebarLayout = (props: any) => {
             <Link href={Route.SETTLEMENT}>{'정산'}</Link>
           </Menu.Item>
         </Menu>
+        <Menu theme={'dark'}>
+          <Menu.Item
+            key={'2'}
+            icon={<MoneyCollectOutlined/>}>
+            <Link href={Route.PAYMENT}>{'결제 및 자금 집행'}</Link>
+          </Menu.Item>
+        </Menu>
       </Sider>
       <Layout style={{ backgroundColor: Colors.blue }}>
         <Header style={{ backgroundColor: '#001529', height: '40px' }}>
